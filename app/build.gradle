@@ -33,7 +33,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
 
-    // WebEngage
+    // WebEngage Beta SDK
+    // This SDK is only for testing purpose, do NOT use this in production applications
     implementation 'com.webengage:android-sdk-beta:3.10.1'
 }
 
