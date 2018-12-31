@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Push Layouts</string>
+    <string name="login">LOGIN</string>
+    <string name="logout">LOGOUT</string>
+</resources>

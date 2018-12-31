@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="0dp">
+
+    <ImageView
+        android:id="@+id/notificationImage"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginLeft="12dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/my_icon"
+        android:layout_gravity="top|end"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
+
+    <TextView
+        android:id="@+id/notificationTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Remote Title"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:layout_toStartOf="@+id/notificationImage"
+        android:layout_toLeftOf="@id/notificationImage" />
+
+    <TextView
+        android:id="@+id/notificationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/notificationImage"
+        android:layout_alignStart="@+id/notificationTitle"
+        android:layout_alignLeft="@+id/notificationTitle"
+        android:layout_alignEnd="@+id/notificationTitle"
+        android:layout_alignRight="@+id/notificationTitle"
+        android:text="Remote message"
+        android:textSize="14dp"
+        android:lineSpacingMultiplier="1.2"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_below="@id/notificationTitle" />
+
+</RelativeLayout>
