@@ -46,7 +46,7 @@ In order to correctly track the push notification actions such as clicks, update
 PendingIntentFactory includes the APIs for constructing the following PendingIntents which must be set in the Notification for tracking different push campaign actions.
 
 
-####1. Click PendingIntent
+#### 1. Click PendingIntent
 
 `PendingIntent constructPushClickPendingIntent(Context context, PushNotificationData pushNotificationData, CallToAction cta, boolean autoCancel)` method returns a PendingIntent which can be set as PendingIntent for content intent or for any action button in your custom push notification.
 
@@ -60,7 +60,7 @@ PendingIntentFactory includes the APIs for constructing the following PendingInt
 ```
 
 
-####2. Delete PendingIntent
+#### 2. Delete PendingIntent
 
 `PendingIntent constructPushDeletePendingIntent(Context context, PushNotificationData pushNotificationData)` method returns a PendingIntent that must be set as delete intent in your notification, which will help WebEngage SDK to track push notification dismisses.
 
@@ -73,7 +73,7 @@ PendingIntentFactory includes the APIs for constructing the following PendingInt
 ```
 
 
-####3. Rerender PendingIntent
+#### 3. Rerender PendingIntent
 
 `PendingIntent constructRerenderPendingIntent(Context context, PushNotificationData pushNotificationData, String requestCodePrefix, Bundle extraData)` method returns a PendingIntent which will trigger the `onRerender` callback on click. This callback can be used to update/rerender your notification.
 
@@ -100,7 +100,7 @@ For E.g. You might want to update the push notification content when user select
 ```
 
 
-####4. Carousel Browse PendingIntent
+#### 4. Carousel Browse PendingIntent
 
 `PendingIntent constructCarouselBrowsePendingIntent(Context context, PushNotificationData pushNotificationData, int newIndex, String navigation, String requestCodePrefix, Bundle extraData)` method returns a PendingIntent which will automatically track the carousel browse event on click of left/right arraows in the carousel push notification. It also triggers the `onRerender` callback which can be used to update the current carousel item.
 
@@ -119,7 +119,7 @@ For E.g. You might want to update the push notification content when user select
 ```
 
 
-####5. Rating Submit PendingIntent
+#### 5. Rating Submit PendingIntent
 
 `PendingIntent constructPushRatingSubmitPendingIntent()` method takes an integer for rating as parameter which will track rating submit event on click of submit button in rating notification.
 
