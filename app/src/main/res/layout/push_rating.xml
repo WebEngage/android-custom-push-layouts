@@ -9,8 +9,7 @@
         android:id="@+id/push_collapsed"
         layout="@layout/push_collapsed"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp" />
+        android:layout_height="wrap_content" />
 
     <FrameLayout
         android:id="@+id/rate_frame"
@@ -18,12 +17,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/push_collapsed"
         android:layout_marginBottom="12dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:visibility="gone">
 
         <ImageView
             android:id="@+id/rate_image"
             android:layout_width="match_parent"
-            android:layout_height="86dp"
+            android:layout_height="94dp"
             android:scaleType="centerCrop"
             android:visibility="gone" />
 
@@ -130,6 +131,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/rating_layout"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:background="@android:color/darker_gray">
     </FrameLayout>
 
@@ -138,9 +141,12 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_below="@id/separator1"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:gravity="center"
         android:text="SUBMIT"
         android:textColor="#000000"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:background="#FFFFFF"/>
 
 </RelativeLayout>

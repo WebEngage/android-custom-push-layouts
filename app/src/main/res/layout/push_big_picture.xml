@@ -7,14 +7,15 @@
         android:id="@+id/push_collapsed"
         layout="@layout/push_collapsed"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"/>
+        android:layout_height="wrap_content"/>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/push_collapsed"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
         <ImageView
             android:id="@+id/big_picture_imageview"
@@ -22,6 +23,13 @@
             android:layout_height="wrap_content"
             android:maxHeight="192dp"
             android:scaleType="centerCrop" />
+
+        <include
+            android:id="@+id/push_actions"
+            layout="@layout/push_actions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" />
 
     </FrameLayout>
 

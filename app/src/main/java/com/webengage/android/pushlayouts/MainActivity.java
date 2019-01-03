@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.webengage.sdk.android.Analytics;
 import com.webengage.sdk.android.WebEngage;
 
 public class MainActivity extends AppCompatActivity {
@@ -56,6 +57,15 @@ public class MainActivity extends AppCompatActivity {
             WebEngage.get().user().logout();
             mLoginButton.setText(getString(R.string.login));
             mUserIdEditText.setText("");
+        }
+    }
+
+    public void track(View view) {
+        String event = ((EditText) findViewById(R.id.event_edittext)).getText().toString().trim();
+        if (!event.isEmpty()) {
+            WebEngage.get().analytics().track(event, new Analytics.Options().setHighReportingPriority(true));
+        } else {
+            Toast.makeText(this, "Invalid User ID!", Toast.LENGTH_LONG).show();
         }
     }
 }

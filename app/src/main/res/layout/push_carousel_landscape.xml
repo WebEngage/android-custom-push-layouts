@@ -7,14 +7,16 @@
         android:id="@+id/push_collapsed"
         layout="@layout/push_collapsed"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="wrap_content"/>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="192dp"
         android:layout_below="@id/push_collapsed"
-        android:layout_gravity="center">
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
         <ImageView
             android:id="@+id/carousel_landscape_image"
@@ -29,7 +31,6 @@
             android:src="@drawable/left"
             android:layout_gravity="start|center_vertical"
             android:scaleType="fitXY"
-            android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp" />
 
         <ImageView
@@ -39,8 +40,7 @@
             android:src="@drawable/right"
             android:layout_gravity="end|center_vertical"
             android:scaleType="fitXY"
-            android:layout_marginEnd="5dp"
-            android:layout_marginRight="5dp"/>
+            android:layout_marginEnd="5dp" />
 
     </FrameLayout>
 

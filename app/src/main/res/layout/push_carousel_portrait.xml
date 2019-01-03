@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include
+        android:id="@+id/push_collapsed"
+        layout="@layout/push_collapsed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <FrameLayout
+        android:id="@+id/carousel_body_portrait"
+        android:layout_width="596dp"
+        android:layout_height="192dp"
+        android:layout_below="@id/push_collapsed"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
+            <RelativeLayout
+                android:id="@+id/carousel_left_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/carousel_curr_container"
+                android:layout_toLeftOf="@+id/carousel_curr_container">
+
+                <ImageView
+                    android:id="@+id/carousel_left_image"
+                    android:layout_width="192dp"
+                    android:layout_height="192dp"
+                    android:layout_centerInParent="true"
+                    android:scaleType="centerCrop" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/carousel_left_image"
+                    android:layout_alignStart="@+id/carousel_left_image"
+                    android:layout_alignLeft="@+id/carousel_left_image"
+                    android:layout_alignEnd="@+id/carousel_left_image"
+                    android:layout_alignRight="@+id/carousel_left_image"
+                    android:layout_alignTop="@+id/carousel_left_image"
+                    android:background="#BFffffff" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/carousel_right_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/carousel_curr_container"
+                android:layout_toRightOf="@+id/carousel_curr_container">
+
+                <ImageView
+                    android:id="@+id/carousel_right_image"
+                    android:layout_width="192dp"
+                    android:layout_height="192dp"
+                    android:layout_centerInParent="true"
+                    android:scaleType="centerCrop" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/carousel_right_image"
+                    android:layout_alignStart="@+id/carousel_right_image"
+                    android:layout_alignLeft="@+id/carousel_right_image"
+                    android:layout_alignEnd="@+id/carousel_right_image"
+                    android:layout_alignRight="@+id/carousel_right_image"
+                    android:layout_alignTop="@+id/carousel_right_image"
+                    android:background="#B0ffffff" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/carousel_curr_container"
+                android:layout_width="wrap_content"
+                android:layout_height="192dp"
+                android:layout_centerInParent="true">
+
+                <ImageView
+                    android:id="@+id/carousel_curr_image"
+                    android:layout_width="212dp"
+                    android:layout_height="192dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:cropToPadding="true"
+                    android:background="@drawable/carousel_v1_drop_shadow"
+                    android:scaleType="centerCrop" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp">
+
+            <ImageView
+                android:id="@+id/left"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:src="@drawable/left"
+                android:layout_gravity="start|center_vertical"
+                android:scaleType="fitXY" />
+
+            <ImageView
+                android:id="@+id/right"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:src="@drawable/right"
+                android:layout_gravity="end|center_vertical"
+                android:scaleType="fitXY" />
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+</RelativeLayout>

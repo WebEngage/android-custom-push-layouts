@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/actions_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="#B2FFFFFF">
+
+    <LinearLayout
+        android:id="@+id/actions"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:paddingStart="@dimen/push_content_margin"
+        android:paddingLeft="@dimen/push_content_margin"
+        android:paddingEnd="12dp"
+        android:paddingRight="12dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/action1"
+            android:layout_weight="1"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:paddingEnd="@dimen/push_action_padding"
+            android:paddingRight="@dimen/push_action_padding"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textStyle="bold"
+            android:gravity="center|left"
+            android:text="Action-1"
+            android:textColor="#000000"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="fill_parent"
+            android:id="@+id/action2"
+            android:layout_height="match_parent"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:paddingEnd="@dimen/push_action_padding"
+            android:paddingRight="@dimen/push_action_padding"
+            android:gravity="center|left"
+            android:textStyle="bold"
+            android:text="Action-2"
+            android:textColor="#000000"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/action3"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:gravity="center|left"
+            android:textStyle="bold"
+            android:text="Action-3"
+            android:textColor="#000000"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</FrameLayout>

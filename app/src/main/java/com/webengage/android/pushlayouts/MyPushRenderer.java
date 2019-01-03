@@ -97,7 +97,6 @@ public class MyPushRenderer implements CustomPushRender, CustomPushRerender {
             collapsedView.setTextViewText(R.id.notificationTitle, pushNotificationData.getTitle());
             collapsedView.setTextViewText(R.id.notificationText, pushNotificationData.getContentText());
 
-            // Download the big picture image
             Bitmap bigPicture = DownloadManager.getBitmapFromURL(pushNotificationData.getBigPictureStyleData().getBigPictureUrl(), false);
 
             RemoteViews bigPictureView = new RemoteViews(context.getPackageName(), R.layout.push_big_picture);
@@ -117,16 +116,36 @@ public class MyPushRenderer implements CustomPushRender, CustomPushRerender {
                     .setCustomContentView(collapsedView)
                     .setCustomBigContentView(bigPictureView)
                     .setContentIntent(contentPendingIntent)
-                    .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                     .setDeleteIntent(deletePendingIntent);
 
             // actions
             List<CallToAction> actionsList = pushNotificationData.getActions();
-            if (actionsList != null) {
-                for (CallToAction callToAction : actionsList) {
+            if (actionsList != null && actionsList.size() > 0) {
+                bigPictureView.setViewVisibility(R.id.push_actions, View.VISIBLE);
+                for (int i = 0; i < actionsList.size(); i++) {
+                    CallToAction callToAction = actionsList.get(i);
                     PendingIntent ctaPendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, callToAction, true);
-                    builder.addAction(0, callToAction.getText(), ctaPendingIntent);
+                    int actionId = -1;
+                    switch (i) {
+                        case 0:
+                            actionId = R.id.action1;
+                            break;
+                        case 1:
+                            actionId = R.id.action2;
+                            break;
+                        case 2:
+                            actionId = R.id.action3;
+                            break;
+                    }
+                    if (actionId != -1) {
+                        bigPictureView.setViewVisibility(actionId, View.VISIBLE);
+                        bigPictureView.setTextViewText(actionId, callToAction.getText());
+                        bigPictureView.setOnClickPendingIntent(actionId, ctaPendingIntent);
+                    }
                 }
+            } else {
+                Log.d(TAG, "no actions received");
+                bigPictureView.setViewVisibility(R.id.push_actions, View.GONE);
             }
 
             Notification notification = builder.build();
@@ -138,59 +157,143 @@ public class MyPushRenderer implements CustomPushRender, CustomPushRerender {
 
         // Carousel
         else if (pushNotificationData.getStyle() == WebEngageConstant.STYLE.CAROUSEL_V1) {
-            PendingIntent deletePendingIntent = PendingIntentFactory.constructPushDeletePendingIntent(context, pushNotificationData);
-            PendingIntent contentPendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, pushNotificationData.getPrimeCallToAction(), true);
+            if ("landscape".equals(pushNotificationData.getCarouselV1Data().getMODE())) {
+                PendingIntent deletePendingIntent = PendingIntentFactory.constructPushDeletePendingIntent(context, pushNotificationData);
+                PendingIntent contentPendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, pushNotificationData.getPrimeCallToAction(), true);
 
-            long when = System.currentTimeMillis();
+                long when = System.currentTimeMillis();
 
-            Bundle browseExtraData = new Bundle();
-            browseExtraData.putLong("when", when);
-            PendingIntent leftPendingIntent = PendingIntentFactory.constructCarouselBrowsePendingIntent(context, pushNotificationData, 0, "left", "carousel_left", browseExtraData);
-            PendingIntent rightPendingIntent = PendingIntentFactory.constructCarouselBrowsePendingIntent(context, pushNotificationData, 0, "right", "carousel_right", browseExtraData);
+                Bundle browseExtraData = new Bundle();
+                browseExtraData.putLong("when", when);
+                PendingIntent leftPendingIntent = PendingIntentFactory.constructCarouselBrowsePendingIntent(context, pushNotificationData, 0, "left", "carousel_left", browseExtraData);
+                PendingIntent rightPendingIntent = PendingIntentFactory.constructCarouselBrowsePendingIntent(context, pushNotificationData, 0, "right", "carousel_right", browseExtraData);
 
-            // Download all images and cache
-            List<CarouselV1CallToAction> ctas = pushNotificationData.getCarouselV1Data().getCallToActions();
-            for (CarouselV1CallToAction cta : ctas) {
-                DownloadManager.downloadBitmap(cta.getImageURL());
-            }
-
-            RemoteViews collapsedView = new RemoteViews(context.getPackageName(), R.layout.push_collapsed);
-            collapsedView.setTextViewText(R.id.notificationTitle, pushNotificationData.getTitle());
-            collapsedView.setTextViewText(R.id.notificationText, pushNotificationData.getContentText());
-
-            CarouselV1CallToAction cta = ctas.get(0);
-            PendingIntent imagePendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, cta, false);
-
-            Bitmap img = DownloadManager.getBitmapFromURL(cta.getImageURL(), true);
-            if (img == null) {
-                img = DownloadManager.getBitmapFromURL(cta.getImageURL(), false);
-                if (img == null) {
-                    // Use a placeholder image
-                    img = BitmapFactory.decodeResource(context.getResources(), R.drawable.banner_android);
+                // Download all images and cache
+                List<CarouselV1CallToAction> ctas = pushNotificationData.getCarouselV1Data().getCallToActions();
+                for (CarouselV1CallToAction cta : ctas) {
+                    DownloadManager.downloadBitmap(cta.getImageURL());
                 }
+
+                RemoteViews collapsedView = new RemoteViews(context.getPackageName(), R.layout.push_collapsed);
+                collapsedView.setTextViewText(R.id.notificationTitle, pushNotificationData.getTitle());
+                collapsedView.setTextViewText(R.id.notificationText, pushNotificationData.getContentText());
+
+                CarouselV1CallToAction cta = ctas.get(0);
+                PendingIntent imagePendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, cta, false);
+
+                Bitmap img = DownloadManager.getBitmapFromURL(cta.getImageURL(), true);
+                if (img == null) {
+                    img = DownloadManager.getBitmapFromURL(cta.getImageURL(), false);
+                    if (img == null) {
+                        // Use a placeholder image
+                        img = BitmapFactory.decodeResource(context.getResources(), R.drawable.banner_android);
+                    }
+                }
+
+                RemoteViews carouselView = new RemoteViews(context.getPackageName(), R.layout.push_carousel_landscape);
+                carouselView.setTextViewText(R.id.notificationTitle, pushNotificationData.getCarouselV1Data().getBigContentTitle());
+                carouselView.setTextViewText(R.id.notificationText, pushNotificationData.getCarouselV1Data().getSummary());
+                carouselView.setImageViewBitmap(R.id.carousel_landscape_image, img);
+                carouselView.setOnClickPendingIntent(R.id.carousel_landscape_image, imagePendingIntent);
+                carouselView.setOnClickPendingIntent(R.id.left, leftPendingIntent);
+                carouselView.setOnClickPendingIntent(R.id.right, rightPendingIntent);
+
+                Notification notification = new NotificationCompat.Builder(context, MY_CHANNEL_ID)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setCustomContentView(collapsedView)
+                        .setCustomBigContentView(carouselView)
+                        .setContentIntent(contentPendingIntent)
+                        .setDeleteIntent(deletePendingIntent)
+                        .build();
+
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(pushNotificationData.getVariationId().hashCode(), notification);
+                Log.d(TAG, "Rendered push notification from application: carousel");
+                return true;
             }
 
-            RemoteViews carouselView = new RemoteViews(context.getPackageName(), R.layout.push_carousel_landscape);
-            carouselView.setTextViewText(R.id.notificationTitle, pushNotificationData.getCarouselV1Data().getBigContentTitle());
-            carouselView.setTextViewText(R.id.notificationText, pushNotificationData.getCarouselV1Data().getSummary());
-            carouselView.setImageViewBitmap(R.id.carousel_landscape_image, img);
-            carouselView.setOnClickPendingIntent(R.id.carousel_landscape_image, imagePendingIntent);
-            carouselView.setOnClickPendingIntent(R.id.left, leftPendingIntent);
-            carouselView.setOnClickPendingIntent(R.id.right, rightPendingIntent);
+            else if ("portrait".equals(pushNotificationData.getCarouselV1Data().getMODE())) {
+                PendingIntent deletePendingIntent = PendingIntentFactory.constructPushDeletePendingIntent(context, pushNotificationData);
+                PendingIntent contentPendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, pushNotificationData.getPrimeCallToAction(), true);
 
-            Notification notification = new NotificationCompat.Builder(context, MY_CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setCustomContentView(collapsedView)
-                    .setCustomBigContentView(carouselView)
-                    .setContentIntent(contentPendingIntent)
-                    .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                    .setDeleteIntent(deletePendingIntent)
-                    .build();
+                long when = System.currentTimeMillis();
 
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-            notificationManager.notify(pushNotificationData.getVariationId().hashCode(), notification);
-            Log.d(TAG, "Rendered push notification from application: carousel");
-            return true;
+                Bundle browseExtraData = new Bundle();
+                browseExtraData.putLong("when", when);
+                PendingIntent leftPendingIntent = PendingIntentFactory.constructCarouselBrowsePendingIntent(context, pushNotificationData, 0, "left", "carousel_left", browseExtraData);
+                PendingIntent rightPendingIntent = PendingIntentFactory.constructCarouselBrowsePendingIntent(context, pushNotificationData, 0, "right", "carousel_right", browseExtraData);
+
+                // Download all images and cache
+                List<CarouselV1CallToAction> ctaList = pushNotificationData.getCarouselV1Data().getCallToActions();
+                for (CarouselV1CallToAction cta : ctaList) {
+                    DownloadManager.downloadBitmap(cta.getImageURL());
+                }
+
+                RemoteViews collapsedView = new RemoteViews(context.getPackageName(), R.layout.push_collapsed);
+                collapsedView.setTextViewText(R.id.notificationTitle, pushNotificationData.getTitle());
+                collapsedView.setTextViewText(R.id.notificationText, pushNotificationData.getContentText());
+
+                int size = ctaList.size();
+                int curr = 0;
+                int right = (curr + 1) % size;
+                int left = (curr - 1 + size) % size;
+
+                CarouselV1CallToAction currCta = ctaList.get(curr);
+                CarouselV1CallToAction leftCta = ctaList.get(left);
+                CarouselV1CallToAction rightCta = ctaList.get(right);
+
+                Bitmap leftImg = DownloadManager.getBitmapFromURL(leftCta.getImageURL(), true);
+                if (leftImg == null) {
+                    leftImg = DownloadManager.getBitmapFromURL(leftCta.getImageURL(), false);
+                    if (leftImg == null) {
+                        // Image could not be downloaded. Set a placeholder image
+                        leftImg = BitmapFactory.decodeResource(context.getResources(), R.drawable.banner_android);
+                    }
+                }
+
+                Bitmap rightImg = DownloadManager.getBitmapFromURL(rightCta.getImageURL(), true);
+                if (rightImg == null) {
+                    rightImg = DownloadManager.getBitmapFromURL(rightCta.getImageURL(), false);
+                    if (rightImg == null) {
+                        // Image could not be downloaded. Set a placeholder image
+                        rightImg = BitmapFactory.decodeResource(context.getResources(), R.drawable.banner_android);
+                    }
+                }
+
+                Bitmap currImg = DownloadManager.getBitmapFromURL(currCta.getImageURL(), true);
+                if (currImg == null) {
+                    currImg = DownloadManager.getBitmapFromURL(currCta.getImageURL(), false);
+                    if (currImg == null) {
+                        // Image could not be downloaded. Set a placeholder image
+                        currImg = BitmapFactory.decodeResource(context.getResources(), R.drawable.banner_android);
+                    }
+                }
+
+                PendingIntent currImagePendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, currCta, false);
+
+                RemoteViews carouselView = new RemoteViews(context.getPackageName(), R.layout.push_carousel_portrait);
+                carouselView.setTextViewText(R.id.notificationTitle, pushNotificationData.getCarouselV1Data().getBigContentTitle());
+                carouselView.setTextViewText(R.id.notificationText, pushNotificationData.getCarouselV1Data().getSummary());
+                carouselView.setImageViewBitmap(R.id.carousel_curr_image, currImg);
+                carouselView.setOnClickPendingIntent(R.id.carousel_curr_image, currImagePendingIntent);
+                carouselView.setImageViewBitmap(R.id.carousel_left_image, leftImg);
+                carouselView.setImageViewBitmap(R.id.carousel_right_image, rightImg);
+                carouselView.setOnClickPendingIntent(R.id.left, leftPendingIntent);
+                carouselView.setOnClickPendingIntent(R.id.right, rightPendingIntent);
+
+                Notification notification = new NotificationCompat.Builder(context, MY_CHANNEL_ID)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setCustomContentView(collapsedView)
+                        .setCustomBigContentView(carouselView)
+                        .setContentIntent(contentPendingIntent)
+                        .setDeleteIntent(deletePendingIntent)
+                        .build();
+
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(pushNotificationData.getVariationId().hashCode(), notification);
+                Log.d(TAG, "Rendered push notification from application: portrait carousel");
+                return true;
+            }
         }
 
         // Rating
@@ -246,8 +349,7 @@ public class MyPushRenderer implements CustomPushRender, CustomPushRerender {
                     .setCustomContentView(collapsedView)
                     .setCustomBigContentView(npsView)
                     .setContentIntent(contentPendingIntent)
-                    .setDeleteIntent(deletePendingIntent)
-                    .setStyle(new NotificationCompat.DecoratedCustomViewStyle());
+                    .setDeleteIntent(deletePendingIntent);
 
             Notification notification = builder.build();
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
@@ -270,67 +372,162 @@ public class MyPushRenderer implements CustomPushRender, CustomPushRerender {
 
         // Carousel
         if (pushNotificationData.getStyle() == WebEngageConstant.STYLE.CAROUSEL_V1) {
-            List<CarouselV1CallToAction> callToActionList = pushNotificationData.getCarouselV1Data().getCallToActions();
-            int size = callToActionList.size();
-            String navigation = bundle.getString("navigation", "right");
-            int prevIndex = bundle.getInt("current");
-            long when = bundle.getLong("when");
-            int newIndex = 0;
-            if (navigation.equals("right")) {
-                newIndex = (prevIndex + 1) % size;
-            } else {
-                newIndex = (prevIndex - 1 + size) % size;
-            }
-
-            PendingIntent deletePendingIntent = PendingIntentFactory.constructPushDeletePendingIntent(context, pushNotificationData);
-            PendingIntent contentPendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, pushNotificationData.getPrimeCallToAction(), true);
-
-            Bundle browseExtraData = new Bundle();
-            browseExtraData.putLong("when", when);
-            PendingIntent leftPendingIntent = PendingIntentFactory.constructCarouselBrowsePendingIntent(context, pushNotificationData, newIndex, "left", "carousel_left", browseExtraData);
-            PendingIntent rightPendingIntent = PendingIntentFactory.constructCarouselBrowsePendingIntent(context, pushNotificationData, newIndex, "right", "carousel_right", browseExtraData);
-
-            CarouselV1CallToAction cta = callToActionList.get(newIndex);
-            PendingIntent imagePendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, cta, false);
-
-            Bitmap img = DownloadManager.getBitmapFromURL(cta.getImageURL(), true);
-            if (img == null) {
-                img = DownloadManager.getBitmapFromURL(cta.getImageURL(), false);
-                if (img == null) {
-                    // Use a default/placeholder image
-                    img = BitmapFactory.decodeResource(context.getResources(), R.drawable.banner_android);
+            if ("landscape".equals(pushNotificationData.getCarouselV1Data().getMODE())) {
+                List<CarouselV1CallToAction> callToActionList = pushNotificationData.getCarouselV1Data().getCallToActions();
+                int size = callToActionList.size();
+                String navigation = bundle.getString("navigation", "right");
+                int prevIndex = bundle.getInt("current");
+                long when = bundle.getLong("when");
+                int newIndex = 0;
+                if (navigation.equals("right")) {
+                    newIndex = (prevIndex + 1) % size;
+                } else {
+                    newIndex = (prevIndex - 1 + size) % size;
                 }
+
+                PendingIntent deletePendingIntent = PendingIntentFactory.constructPushDeletePendingIntent(context, pushNotificationData);
+                PendingIntent contentPendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, pushNotificationData.getPrimeCallToAction(), true);
+
+                Bundle browseExtraData = new Bundle();
+                browseExtraData.putLong("when", when);
+                PendingIntent leftPendingIntent = PendingIntentFactory.constructCarouselBrowsePendingIntent(context, pushNotificationData, newIndex, "left", "carousel_left", browseExtraData);
+                PendingIntent rightPendingIntent = PendingIntentFactory.constructCarouselBrowsePendingIntent(context, pushNotificationData, newIndex, "right", "carousel_right", browseExtraData);
+
+                CarouselV1CallToAction cta = callToActionList.get(newIndex);
+                PendingIntent imagePendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, cta, false);
+
+                Bitmap img = DownloadManager.getBitmapFromURL(cta.getImageURL(), true);
+                if (img == null) {
+                    img = DownloadManager.getBitmapFromURL(cta.getImageURL(), false);
+                    if (img == null) {
+                        // Use a default/placeholder image
+                        img = BitmapFactory.decodeResource(context.getResources(), R.drawable.banner_android);
+                    }
+                }
+
+                RemoteViews collapsedView = new RemoteViews(context.getPackageName(), R.layout.push_collapsed);
+                collapsedView.setTextViewText(R.id.notificationTitle, pushNotificationData.getTitle());
+                collapsedView.setTextViewText(R.id.notificationText, pushNotificationData.getContentText());
+
+                RemoteViews carouselView = new RemoteViews(context.getPackageName(), R.layout.push_carousel_landscape);
+                carouselView.setTextViewText(R.id.notificationTitle, pushNotificationData.getCarouselV1Data().getBigContentTitle());
+                carouselView.setTextViewText(R.id.notificationText, pushNotificationData.getCarouselV1Data().getSummary());
+                carouselView.setImageViewBitmap(R.id.carousel_landscape_image, img);
+                carouselView.setOnClickPendingIntent(R.id.carousel_landscape_image, imagePendingIntent);
+                carouselView.setOnClickPendingIntent(R.id.left, leftPendingIntent);
+                carouselView.setOnClickPendingIntent(R.id.right, rightPendingIntent);
+
+                Notification notification = new NotificationCompat.Builder(context, MY_CHANNEL_ID)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setCustomContentView(collapsedView)
+                        .setCustomBigContentView(carouselView)
+                        .setContentIntent(contentPendingIntent)
+                        .setDeleteIntent(deletePendingIntent)
+                        .setWhen(when)
+                        .build();
+
+                notification.flags |= Notification.FLAG_AUTO_CANCEL;
+                notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
+
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(pushNotificationData.getVariationId().hashCode(), notification);
+                Log.d(TAG, "Re-rendered push notification: carousel");
+                return true;
             }
 
-            RemoteViews collapsedView = new RemoteViews(context.getPackageName(), R.layout.push_collapsed);
-            collapsedView.setTextViewText(R.id.notificationTitle, pushNotificationData.getTitle());
-            collapsedView.setTextViewText(R.id.notificationText, pushNotificationData.getContentText());
+            else if ("portrait".equals(pushNotificationData.getCarouselV1Data().getMODE())) {
+                PendingIntent deletePendingIntent = PendingIntentFactory.constructPushDeletePendingIntent(context, pushNotificationData);
+                PendingIntent contentPendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, pushNotificationData.getPrimeCallToAction(), true);
 
-            RemoteViews carouselView = new RemoteViews(context.getPackageName(), R.layout.push_carousel_landscape);
-            carouselView.setTextViewText(R.id.notificationTitle, pushNotificationData.getCarouselV1Data().getBigContentTitle());
-            carouselView.setTextViewText(R.id.notificationText, pushNotificationData.getCarouselV1Data().getSummary());
-            carouselView.setImageViewBitmap(R.id.carousel_landscape_image, img);
-            carouselView.setOnClickPendingIntent(R.id.carousel_landscape_image, imagePendingIntent);
-            carouselView.setOnClickPendingIntent(R.id.left, leftPendingIntent);
-            carouselView.setOnClickPendingIntent(R.id.right, rightPendingIntent);
+                // Download all images and cache
+                List<CarouselV1CallToAction> ctaList = pushNotificationData.getCarouselV1Data().getCallToActions();
+                for (CarouselV1CallToAction cta : ctaList) {
+                    DownloadManager.downloadBitmap(cta.getImageURL());
+                }
 
-            Notification notification = new NotificationCompat.Builder(context, MY_CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setCustomContentView(collapsedView)
-                    .setCustomBigContentView(carouselView)
-                    .setContentIntent(contentPendingIntent)
-                    .setDeleteIntent(deletePendingIntent)
-                    .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                    .setWhen(when)
-                    .build();
+                long when = bundle.getLong("when");
+                int prevIndex = bundle.getInt("current");
+                String navigation = bundle.getString("navigation", "right");
+                int size = ctaList.size();
+                int curr = 0;
+                if (navigation.equals("right")) {
+                    curr = (prevIndex + 1) % size;
+                } else {
+                    curr = (prevIndex - 1 + size) % size;
+                }
 
-            notification.flags |= Notification.FLAG_AUTO_CANCEL;
-            notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
+                int right = (curr + 1) % size;
+                int left = (curr - 1 + size) % size;
 
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-            notificationManager.notify(pushNotificationData.getVariationId().hashCode(), notification);
-            Log.d(TAG, "Rerendered push notification: carousel");
-            return true;
+                Bundle browseExtraData = new Bundle();
+                browseExtraData.putLong("when", when);
+
+                PendingIntent leftPendingIntent = PendingIntentFactory.constructCarouselBrowsePendingIntent(context, pushNotificationData, curr, "left", "carousel_left", browseExtraData);
+                PendingIntent rightPendingIntent = PendingIntentFactory.constructCarouselBrowsePendingIntent(context, pushNotificationData, curr, "right", "carousel_right", browseExtraData);
+
+                RemoteViews collapsedView = new RemoteViews(context.getPackageName(), R.layout.push_collapsed);
+                collapsedView.setTextViewText(R.id.notificationTitle, pushNotificationData.getTitle());
+                collapsedView.setTextViewText(R.id.notificationText, pushNotificationData.getContentText());
+
+                CarouselV1CallToAction currCta = ctaList.get(curr);
+                CarouselV1CallToAction leftCta = ctaList.get(left);
+                CarouselV1CallToAction rightCta = ctaList.get(right);
+
+                Bitmap leftImg = DownloadManager.getBitmapFromURL(leftCta.getImageURL(), true);
+                if (leftImg == null) {
+                    leftImg = DownloadManager.getBitmapFromURL(leftCta.getImageURL(), false);
+                    if (leftImg == null) {
+                        // Image could not be downloaded. Set a placeholder image
+                        leftImg = BitmapFactory.decodeResource(context.getResources(), R.drawable.banner_android);
+                    }
+                }
+
+                Bitmap rightImg = DownloadManager.getBitmapFromURL(rightCta.getImageURL(), true);
+                if (rightImg == null) {
+                    rightImg = DownloadManager.getBitmapFromURL(rightCta.getImageURL(), false);
+                    if (rightImg == null) {
+                        // Image could not be downloaded. Set a placeholder image
+                        rightImg = BitmapFactory.decodeResource(context.getResources(), R.drawable.banner_android);
+                    }
+                }
+
+                Bitmap currImg = DownloadManager.getBitmapFromURL(currCta.getImageURL(), true);
+                if (currImg == null) {
+                    currImg = DownloadManager.getBitmapFromURL(currCta.getImageURL(), false);
+                    if (currImg == null) {
+                        // Image could not be downloaded. Set a placeholder image
+                        currImg = BitmapFactory.decodeResource(context.getResources(), R.drawable.banner_android);
+                    }
+                }
+
+                PendingIntent currImagePendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, currCta, false);
+
+                RemoteViews carouselView = new RemoteViews(context.getPackageName(), R.layout.push_carousel_portrait);
+                carouselView.setTextViewText(R.id.notificationTitle, pushNotificationData.getCarouselV1Data().getBigContentTitle());
+                carouselView.setTextViewText(R.id.notificationText, pushNotificationData.getCarouselV1Data().getSummary());
+                carouselView.setImageViewBitmap(R.id.carousel_curr_image, currImg);
+                carouselView.setOnClickPendingIntent(R.id.carousel_curr_image, currImagePendingIntent);
+                carouselView.setImageViewBitmap(R.id.carousel_left_image, leftImg);
+                carouselView.setImageViewBitmap(R.id.carousel_right_image, rightImg);
+                carouselView.setOnClickPendingIntent(R.id.left, leftPendingIntent);
+                carouselView.setOnClickPendingIntent(R.id.right, rightPendingIntent);
+
+                Notification notification = new NotificationCompat.Builder(context, MY_CHANNEL_ID)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setCustomContentView(collapsedView)
+                        .setCustomBigContentView(carouselView)
+                        .setContentIntent(contentPendingIntent)
+                        .setDeleteIntent(deletePendingIntent)
+                        .build();
+
+                notification.flags |= Notification.FLAG_AUTO_CANCEL;
+                notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
+
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(pushNotificationData.getVariationId().hashCode(), notification);
+                Log.d(TAG, "Re-rendered push notification from application: portrait carousel");
+                return true;
+            }
         }
 
         // Rating
@@ -397,8 +594,7 @@ public class MyPushRenderer implements CustomPushRender, CustomPushRerender {
                     .setCustomContentView(collapsedView)
                     .setCustomBigContentView(npsView)
                     .setContentIntent(contentPendingIntent)
-                    .setDeleteIntent(deletePendingIntent)
-                    .setStyle(new NotificationCompat.DecoratedCustomViewStyle());
+                    .setDeleteIntent(deletePendingIntent);
 
             Notification notification = builder.build();
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
@@ -406,7 +602,7 @@ public class MyPushRenderer implements CustomPushRender, CustomPushRerender {
 
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
             notificationManager.notify(pushNotificationData.getVariationId().hashCode(), notification);
-            Log.d(TAG, "Rerendered push notification: rating");
+            Log.d(TAG, "Re-rendered push notification: rating");
             return true;
         }
 
