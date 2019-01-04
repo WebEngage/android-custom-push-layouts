@@ -41,9 +41,9 @@ The instance of PushNotificationData available to you in the onRender and onRere
 
 ### Tracking Push Notification Actions
 
-In order to correctly track the push notification actions such as clicks, updates, dismissed, etc. it is mandatory to use the PendingIntents constructed through the APIs provided in the WebEngage's PendingIntentFactory class.
+In order to correctly track the push notification actions such as clicks, updates, dismissed, etc. in custom push notifications, it is mandatory to use the PendingIntents constructed through the APIs provided in the WebEngage's PendingIntentFactory class.
 
-PendingIntentFactory includes the APIs for constructing the following PendingIntents which must be set in the Notification for tracking different push campaign actions.
+PendingIntentFactory includes the APIs for constructing the following PendingIntents which must be set in the Notification for tracking different push notification actions.
 
 
 #### 1. Click PendingIntent
@@ -371,6 +371,10 @@ The below code sample shows how to show multi-line text in a Big Picture notific
     }
 ```
 
+<p align="center">
+  <img width="460" src="https://raw.githubusercontent.com/WebEngage/android-custom-push-layouts/master/images/custom_bigpicture.png">
+</p>
+
 
 ### 3. Carousel Landscape Layout
 
@@ -535,6 +539,10 @@ Now re-render the carousel notification in onRerender callback every time the us
 	    return false;
 	}
 ```
+
+<p align="center">
+  <img width="460" src="https://raw.githubusercontent.com/WebEngage/android-custom-push-layouts/master/images/custom_carousel_landscape.png">
+</p>
 
 
 ### 4. Carousel Portrait Layout
@@ -756,6 +764,10 @@ Re-render on left/right arrow clicks.
 	}
 ```
 
+<p align="center">
+  <img width="460" src="https://raw.githubusercontent.com/WebEngage/android-custom-push-layouts/master/images/custom_carousel_portrait.png">
+</p>
+
 
 ### 5. Rating Layout
 
@@ -929,4 +941,9 @@ public boolean onRerender(Context context, PushNotificationData pushNotification
 }
 ```
 
-These code samples are simple examples for modifying and rendering custom push notification layouts through WebEngage. You can render even more complex notification layouts as per your requirements.
+<p align="center">
+  <img width="460" src="https://raw.githubusercontent.com/WebEngage/android-custom-push-layouts/master/images/custom_rating.png">
+</p>
+
+
+These code samples are simple examples for modifying and rendering custom layouts for push notifications sent through WebEngage. You can render even more complex notification layouts as per your requirements.
