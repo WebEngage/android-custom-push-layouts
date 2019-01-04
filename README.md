@@ -145,9 +145,8 @@ Sample usage of these PendingIntents can be found in the code snippets of sample
     implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
 
-    // WebEngage Beta SDK
-    // This SDK is only for testing purpose, do NOT use this in production applications
-    implementation 'com.webengage:android-sdk-beta:3.10.1'
+    // WebEngage SDK
+    implementation 'com.webengage:android-sdk:3.10.1'
 ```
 
 Also integrate FCM with your app as shown [here](https://docs.webengage.com/docs/android-fcm-integration)
