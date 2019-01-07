@@ -121,7 +121,9 @@ For E.g. You might want to update the push notification content when user select
 
 #### 5. Rating Submit PendingIntent
 
-`PendingIntent constructPushRatingSubmitPendingIntent()` method takes an integer for rating as parameter which will track rating submit event on click of submit button in rating notification.
+`PendingIntent constructPushRatingSubmitPendingIntent(Context context, PushNotificationData pushNotificationData, int rateValue)` method takes an integer for rating as parameter which will track rating submit event on click of submit button in rating notification.
+
+*param* **int rateValue**: This is the last rating value selected by the user.
 
 ```java
     int currIndex = extraData.getInt("current");  // current index can be obtained from extraData bundle provided while setting Click PendingIntent
