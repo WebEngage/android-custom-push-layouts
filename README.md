@@ -141,12 +141,12 @@ Sample usage of these PendingIntents can be found in the code snippets of sample
 1. Add the following dependencies in your app-level build.gradle file.
 
 ```gradle
-    // Firebase
+    // Firebase SDK
     implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
 
     // WebEngage SDK
-    implementation 'com.webengage:android-sdk:3.10.1'
+    implementation 'com.webengage:android-sdk:3.+'
 ```
 
 Also integrate FCM with your app as shown [here](https://docs.webengage.com/docs/android-fcm-integration)
@@ -220,7 +220,7 @@ Here are some sample code snippets which might help you to build your own custom
 
 ### 1. Big Text Layout
 
-The following code snippet shows how to show Big Text notification within WebEngage CustomPushRender implementation.
+The following code snippet demonstrates how to show Big Text notification without large icon using WebEngage CustomPushRender implementation.
 
 `MyPushRenderer.java`
 
@@ -277,10 +277,14 @@ public class MyPushRenderer implements CustomPushRender, CustomPushRerender {
 }
 ```
 
+<p align="center">
+  <img width="460" src="https://raw.githubusercontent.com/WebEngage/android-custom-push-layouts/master/images/custom_bigtext.png">
+</p>
+
 
 ### 2. Big Picture Layout
 
-The below code sample shows how to show multi-line text in a Big Picture notification style.
+The below code sample demonstrates how to show multi-line text in a Big Picture notification style.
 
 [push_collapsed.xml](https://github.com/WebEngage/android-custom-push-layouts/blob/master/app/src/main/res/layout/push_collapsed.xml)
 
@@ -385,6 +389,8 @@ Initially render the carousel notification from the onRender callback as shown b
 
 [push_carousel_landscape.xml](https://github.com/WebEngage/android-custom-push-layouts/blob/master/app/src/main/res/layout/push_carousel_landscape.xml)
 
+`MyPushRenderer.java`
+
 ```java
     @Override
     public boolean onRender(Context context, PushNotificationData pushNotificationData) {
@@ -459,6 +465,8 @@ Initially render the carousel notification from the onRender callback as shown b
 
 
 Now re-render the carousel notification in onRerender callback every time the user browses the carousel by clicking on left/right arrow as shown below.
+
+`MyPushRenderer.java`
 
 ```java
 	@Override
@@ -549,6 +557,8 @@ Now re-render the carousel notification in onRerender callback every time the us
 The following sample shows how to display carousel portrait notification using onRender and onRerender callbacks.
 
 [push_carousel_portrait.xml](https://github.com/WebEngage/android-custom-push-layouts/blob/master/app/src/main/res/layout/push_carousel_portrait.xml)
+
+`MyPushRenderer.java`
 
 ```java
     @Override
@@ -652,6 +662,8 @@ The following sample shows how to display carousel portrait notification using o
 
 
 Re-render on left/right arrow clicks.
+
+`MyPushRenderer.java`
 
 ```java
 	@Override
@@ -774,6 +786,8 @@ This code snippet shows how to display the Rating notification layout using onRe
 
 [push_rating.xml](https://github.com/WebEngage/android-custom-push-layouts/blob/master/app/src/main/res/layout/push_rating.xml)
 
+`MyPushRenderer.java`
+
 ```java
     @Override
     public boolean onRender(Context context, PushNotificationData pushNotificationData) {
@@ -852,6 +866,8 @@ This code snippet shows how to display the Rating notification layout using onRe
 ```
 
 Re-render the rating notification in onRerender callback whenever the user selects/changes the rating as shown below.
+
+`MyPushRenderer.java`
 
 ```java
 @Override

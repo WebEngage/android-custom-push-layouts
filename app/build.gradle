@@ -29,13 +29,12 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    // Firebase
+    // Firebase SDK
     implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
 
-    // WebEngage Beta SDK
-    // This SDK is only for testing purpose, do NOT use this in production applications
-    implementation 'com.webengage:android-sdk:3.10.1'
+    // WebEngage SDK
+    implementation 'com.webengage:android-sdk:3.+'
 }
 
 apply plugin: 'com.google.gms.google-services'
