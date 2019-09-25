@@ -217,6 +217,14 @@ public class MainApplication extends Application {
 }
 ```
 
+
+4. Add `we_custom_render: true` under custom key-value pairs section in your push notification campaign.
+
+<p align="center">
+  <img width="460" src="https://raw.githubusercontent.com/WebEngage/android-custom-push-layouts/master/images/customdata.png">
+</p>
+
+
 Here are some sample code snippets which might help you to build your own custom push notification layouts.
 
 
@@ -960,6 +968,79 @@ public boolean onRerender(Context context, PushNotificationData pushNotification
 
 <p align="center">
   <img width="460" src="https://raw.githubusercontent.com/WebEngage/android-custom-push-layouts/master/images/custom_rating.png">
+</p>
+
+
+### 6. HTML-Styled Text Layout
+
+**Campaign settings**
+
+<p align="center">
+  <img width="460" src="https://raw.githubusercontent.com/WebEngage/android-custom-push-layouts/master/images/html_text.png">
+</p>
+
+<p align="center">
+  <img width="460" src="https://raw.githubusercontent.com/WebEngage/android-custom-push-layouts/master/images/html_customdata.png">
+</p>
+
+The following code snippet shows how to display the HTML styled notification texts using onRender callback.
+
+`MyPushRenderer.java`
+
+```java
+public class MyPushRenderer implements CustomPushRender {
+    ...
+
+    @Override
+    public boolean onRender(Context context, PushNotificationData pushNotificationData) {
+        if (pushNotificationData == null) {
+            return false;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // create notification channel
+        }
+
+        // HTML Styled Big Text
+        if (pushNotificationData.getStyle() == WebEngageConstant.STYLE.BIG_TEXT && "html".equalsIgnoreCase(customData.getString("format", ""))) {
+            PendingIntent deletePendingIntent = PendingIntentFactory.constructPushDeletePendingIntent(context, pushNotificationData);
+            PendingIntent contentPendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, pushNotificationData.getPrimeCallToAction(), true);
+
+            Spanned styledTitle = HtmlCompat.fromHtml(pushNotificationData.getTitle(), HtmlCompat.FROM_HTML_MODE_COMPACT);
+            Spanned styledText = HtmlCompat.fromHtml(pushNotificationData.getContentText(), HtmlCompat.FROM_HTML_MODE_COMPACT);
+            Spanned styledBigTitle = HtmlCompat.fromHtml(pushNotificationData.getBigTextStyleData().getBigContentTitle(), HtmlCompat.FROM_HTML_MODE_COMPACT);
+            Spanned styledBigText = HtmlCompat.fromHtml(pushNotificationData.getBigTextStyleData().getBigText(), HtmlCompat.FROM_HTML_MODE_COMPACT);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MY_CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(styledTitle)
+                .setContentText(styledText)
+                .setContentIntent(contentPendingIntent)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                    .setBigContentTitle(styledBigTitle)
+                    .bigText(styledBigText))
+                .setDeleteIntent(deletePendingIntent);
+
+            // actions
+            List<CallToAction> actionsList = pushNotificationData.getActions();
+            if (actionsList != null) {
+                for (CallToAction callToAction : actionsList) {
+                    PendingIntent ctaPendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, callToAction, true);
+                    builder.addAction(0, callToAction.getText(), ctaPendingIntent);
+                }
+            }
+
+            Notification notification = builder.build();
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            notificationManager.notify(pushNotificationData.getVariationId().hashCode(), notification);
+            Log.d(TAG, "Rendered push notification from application: html styled big text");
+            return true;
+        }
+        ...
+```
+
+<p align="center">
+  <img width="460" src="https://raw.githubusercontent.com/WebEngage/android-custom-push-layouts/master/images/custom_html.png">
 </p>
 
 

@@ -45,7 +45,7 @@ public class MainApplication extends Application {
                 @Override
                 public void onSuccess(InstanceIdResult instanceIdResult) {
                     String token = instanceIdResult.getToken();
-                    Log.d(TAG,  "FCM token: " + token);
+                    Log.d(TAG, "FCM token: " + token);
                     WebEngage.get().setRegistrationID(token);
                 }
             });

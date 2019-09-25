@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.text.HtmlCompat;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -55,10 +57,46 @@ public class MyPushRenderer implements CustomPushRender, CustomPushRerender {
         }
 
         Bundle customData = pushNotificationData.getCustomData();
-        Log.d(TAG, "custom data: " + String.valueOf(customData));
+        Log.d(TAG, "custom data: " + customData);
+
+        // HTML Styled Big Text
+        if (pushNotificationData.getStyle() == WebEngageConstant.STYLE.BIG_TEXT && "html".equalsIgnoreCase(customData.getString("format", ""))) {
+            PendingIntent deletePendingIntent = PendingIntentFactory.constructPushDeletePendingIntent(context, pushNotificationData);
+            PendingIntent contentPendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, pushNotificationData.getPrimeCallToAction(), true);
+
+            Spanned styledTitle = HtmlCompat.fromHtml(pushNotificationData.getTitle(), HtmlCompat.FROM_HTML_MODE_COMPACT);
+            Spanned styledText = HtmlCompat.fromHtml(pushNotificationData.getContentText(), HtmlCompat.FROM_HTML_MODE_COMPACT);
+            Spanned styledBigTitle = HtmlCompat.fromHtml(pushNotificationData.getBigTextStyleData().getBigContentTitle(), HtmlCompat.FROM_HTML_MODE_COMPACT);
+            Spanned styledBigText = HtmlCompat.fromHtml(pushNotificationData.getBigTextStyleData().getBigText(), HtmlCompat.FROM_HTML_MODE_COMPACT);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MY_CHANNEL_ID)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(styledTitle)
+                    .setContentText(styledText)
+                    .setContentIntent(contentPendingIntent)
+                    .setStyle(new NotificationCompat.BigTextStyle()
+                            .setBigContentTitle(styledBigTitle)
+                            .bigText(styledBigText))
+                    .setDeleteIntent(deletePendingIntent);
+
+            // actions
+            List<CallToAction> actionsList = pushNotificationData.getActions();
+            if (actionsList != null) {
+                for (CallToAction callToAction : actionsList) {
+                    PendingIntent ctaPendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, callToAction, true);
+                    builder.addAction(0, callToAction.getText(), ctaPendingIntent);
+                }
+            }
+
+            Notification notification = builder.build();
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            notificationManager.notify(pushNotificationData.getVariationId().hashCode(), notification);
+            Log.d(TAG, "Rendered push notification from application: html styled big text");
+            return true;
+        }
 
         // Big text
-        if (pushNotificationData.getStyle() == WebEngageConstant.STYLE.BIG_TEXT) {
+        else if (pushNotificationData.getStyle() == WebEngageConstant.STYLE.BIG_TEXT) {
             PendingIntent deletePendingIntent = PendingIntentFactory.constructPushDeletePendingIntent(context, pushNotificationData);
             PendingIntent contentPendingIntent = PendingIntentFactory.constructPushClickPendingIntent(context, pushNotificationData, pushNotificationData.getPrimeCallToAction(), true);
 
