@@ -983,7 +983,7 @@ public boolean onRerender(Context context, PushNotificationData pushNotification
   <img width="460" src="https://raw.githubusercontent.com/WebEngage/android-custom-push-layouts/master/images/html_customdata.png">
 </p>
 
-The following code snippet shows how to display the HTML styled notification texts using onRender callback.
+The following code snippet shows how to display the HTML styled **Text** push notifications using onRender callback.
 
 `MyPushRenderer.java`
 
@@ -1042,6 +1042,31 @@ public class MyPushRenderer implements CustomPushRender {
 <p align="center">
   <img width="460" src="https://raw.githubusercontent.com/WebEngage/android-custom-push-layouts/master/images/custom_html.png">
 </p>
+
+Similarly, for **Banner** push notifications refer [Big Picture Layout](https://github.com/WebEngage/android-custom-push-layouts#2-big-picture-layout) and modify the code as shown below.
+
+```java
+    ...
+    // HTML Styled Big Picture
+    if (pushNotificationData.getStyle() == WebEngageConstant.STYLE.BIG_PICTURE && "html".equalsIgnoreCase(customData.getString("format", ""))) {
+        // Format the HTML styled texts
+        Spanned styledTitle = HtmlCompat.fromHtml(pushNotificationData.getTitle(), HtmlCompat.FROM_HTML_MODE_COMPACT);
+        Spanned styledText = HtmlCompat.fromHtml(pushNotificationData.getContentText(), HtmlCompat.FROM_HTML_MODE_COMPACT);
+
+        Spanned styledBigTitle = HtmlCompat.fromHtml(pushNotificationData.getBigPictureStyleData().getBigContentTitle(), HtmlCompat.FROM_HTML_MODE_COMPACT);    
+        Spanned styledBigText = HtmlCompat.fromHtml(pushNotificationData.getBigPictureStyleData().getSummary(), HtmlCompat.FROM_HTML_MODE_COMPACT);
+        ...
+
+        collapsedView.setTextViewText(R.id.notificationTitle, styledTitle);
+        collapsedView.setTextViewText(R.id.notificationText, styledText);
+        ...
+
+        bigPictureView.setTextViewText(R.id.notificationTitle, styledBigTitle);
+        bigPictureView.setTextViewText(R.id.notificationText, styledBigText);
+        ...
+    }
+    ...
+```
 
 
 These code samples are simple examples for modifying and rendering custom layouts for push notifications sent through WebEngage. You can render even more complex notification layouts as per your requirements.

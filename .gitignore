@@ -12,3 +12,8 @@
 /.idea
 
 /app/google-services.json
+.project
+.settings/
+app/.classpath
+app/.project
+app/.settings/
