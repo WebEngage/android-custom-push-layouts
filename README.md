@@ -971,7 +971,7 @@ public boolean onRerender(Context context, PushNotificationData pushNotification
 </p>
 
 
-### 6. HTML-Styled Text Layout
+### 6. HTML-Styled Text and Banner Layout
 
 **Campaign settings**
 
